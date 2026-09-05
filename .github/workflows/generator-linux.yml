@@ -715,8 +715,7 @@ jobs:
               <image width="$(identify -format "%w" "./res/icon.png")" height="$(identify -format "%h" "./res/icon.png")" xlink:href="data:image/png;base64,$(base64 -w 0 "./res/icon.png")"/>
             </svg>
             EOF
-
-   - name: Build appimage package
+    - name: Build appimage package
   shell: bash
   run: |
     sed -ie "s|rustdesk|${{ env.filename }}|g" appimage/*
@@ -725,9 +724,6 @@ jobs:
     # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
     sudo apt-get update -y
     sudo apt-get install -y libarchive-tools libfuse2
-    
-    # Fix setuptools compatibility
-    sudo pip3 install --upgrade 'setuptools<70.0' wheel
     
     # set-up appimage-builder
     sudo pip3 install git+https://github.com/rustdesk-org/appimage-builder.git
