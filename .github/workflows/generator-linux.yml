@@ -716,17 +716,20 @@ jobs:
             </svg>
             EOF
     - name: Build appimage package
-  shell: bash
-  run: |
-    sed -ie "s|rustdesk|${{ env.filename }}|g" appimage/*
-    mv appimage/rustdesk.deb "appimage/${{ env.filename }}.deb"
+      shell: bash
+      run: |
+        sed -ie "s|rustdesk|${{ env.filename }}|g" appimage/*
+        mv appimage/rustdesk.deb "appimage/${{ env.filename }}.deb"
 
-    # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
-    sudo apt-get update -y
-    sudo apt-get install -y libarchive-tools libfuse2
-    
-    # set-up appimage-builder
-    sudo pip3 install git+https://github.com/rustdesk-org/appimage-builder.git
+        # install libarchive-tools for bsdtar command used in AppImageBuilder.yml
+        sudo apt-get update -y
+        sudo apt-get install -y libarchive-tools libfuse2
+
+        # Fix setuptools compatibility
+        sudo pip3 install --upgrade 'setuptools<70.0' wheel
+
+        # set-up appimage-builder
+        sudo pip3 install git+https://github.com/rustdesk-org/appimage-builder.git
           # run appimage-builder
           pushd appimage
           sudo appimage-builder --skip-tests --recipe ./AppImageBuilder-${{ matrix.job.arch }}.yml
